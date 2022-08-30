@@ -8,10 +8,12 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <div >
+    <div className="container mx-auto mt-20">
     <Header/>
-    <Form/>
-    <Patientlist/>
+    <div className="mt-8 md:flex">
+      <Form/>
+      <Patientlist/>
+    </div>
     </div>
   )
 }
