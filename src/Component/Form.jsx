@@ -1,6 +1,8 @@
 import { useState } from "react";
+import Error from "./Error";
 
-const Form = () => {
+const Form = ({setPatients, patients}) => {
+  
   const initialInfo = {
     namePet: "",
     nameOwner: "",
@@ -9,11 +11,38 @@ const Form = () => {
     symptom: "",
   }
 
-  const [info, setInfo] = useState({initialInfo})
+  const [info, setInfo] = useState(initialInfo)
+
+  const[error, setError] = useState(false)
+  
+  const handleInputChange = (event) =>{
+    setInfo({
+      ...info,
+      [event.target.name] : event.target.value
+    })
+  }
 
   const handleSubmit = (e) =>{
     e.preventDefault();
-    console.log("sending...")
+    //validation of form 
+    if([info.namePet,
+        info.nameOwner,
+        info.email,
+        info.medicalClearance,
+        info.symptom].includes('')){
+        console.log("Hay al menos un elemento vacio")
+        setError(true)
+    }else{
+      setError(false)
+      setPatients([...patients, info])
+      
+      //reiniciar el formulario
+      setInfo(initialInfo)
+
+    }
+    
+    
+    
   }
 
   return (
@@ -23,10 +52,15 @@ const Form = () => {
       <span className="text-pink1 font-bold">Administralos</span>
       </p> 
 
-
       <form 
       onSubmit = {handleSubmit}
-      className="bg-white shodow-md rounded-lg py-10 px-5"> 
+      className="bg-white shodow-md rounded-lg py-10 px-5">
+
+      {error && 
+      <Error
+      mensaje = {"Todos los campos son obligatorios"}/>
+      }
+
         <div className="mb-5">
           <label htmlFor="Name" className="block font-bold uppercase text-gray-700">Nombre mascota</label>
           <input
@@ -35,7 +69,8 @@ const Form = () => {
           placeholder="Nombre del lomito"
           className="border-2 w-full rounded-lg text-gray-400 px-2 mt-2"
           value={info.namePet}
-          onChange = {(e) => setInfo(e.target.value)}
+          name = "namePet"
+          onChange = {handleInputChange}
           />
         </div>
 
@@ -47,7 +82,8 @@ const Form = () => {
           placeholder="De quien es el lomito"
           className="border-2 w-full rounded-lg text-gray-400 px-2 mt-2"
           value={info.nameOwner}
-          onChange = {(e) => setInfo(e.target.value)}
+          name = "nameOwner"
+          onChange = {handleInputChange}
           />
         </div>
 
@@ -59,7 +95,8 @@ const Form = () => {
           placeholder="Email de quien es el lomito"
           className="border-2 w-full rounded-lg text-gray-400 px-2 mt-2"
           value={info.email}
-          onChange = {(e) => setInfo(e.target.value)}
+          name = "email"
+          onChange = {handleInputChange}
           />
         </div>
 
@@ -70,7 +107,8 @@ const Form = () => {
           type= "date"
           className="border-2 w-full rounded-lg text-gray-400 px-2 mt-2"
           value={info.medicalClearance}
-          onChange = {(e) => setInfo(e.target.value)}
+          name = "medicalClearance"
+          onChange = {handleInputChange}
           />
         </div>
 
@@ -81,7 +119,8 @@ const Form = () => {
         className="border-2 w-full text-gray-400 px-2 mt-5 rounded-md"
         placeholder="Descripción general de los sintomas"
         value={info.symptom}
-        onChange = {(e) => setInfo(e.target.value)}
+        name = "symptom"
+        onChange = {handleInputChange}
         />
         </div>
         
