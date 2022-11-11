@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Error from "./Error";
 
-const Form = ({setPatients, patients}) => {
+const Form = ({setPatients, patients, patient}) => {
+
+  const generateId = () =>{
+    const random = Math.random().toString(36).substr(2);
+    const date = Date.now().toString(36);
+    return random + date
+  }
   
   const initialInfo = {
     namePet: "",
@@ -10,6 +16,12 @@ const Form = ({setPatients, patients}) => {
     medicalClearance: "",
     symptom: "",
   }
+
+  useEffect(() =>{
+    {Object.keys(patient).length > 0 &&
+    setInfo(patient)
+    }
+  },[patient])
 
   const [info, setInfo] = useState(initialInfo)
 
@@ -30,12 +42,22 @@ const Form = ({setPatients, patients}) => {
         info.email,
         info.medicalClearance,
         info.symptom].includes('')){
-        console.log("Hay al menos un elemento vacio")
+        //console.log("Hay al menos un elemento vacio")
         setError(true)
     }else{
-      setError(false)
-      setPatients([...patients, info])
       
+      setError(false)
+      if(patient.id){
+        //Editar registro
+        info.id = patient.id
+        const patientsUpdate = patients.map(patientState => patientState.id === 
+          patient.id ? info : patientState)
+          setPatients(patientsUpdate)
+      }else{
+        //Nuevo registro
+        info.id = generateId()
+        setPatients([...patients, info])
+      }      
       //reiniciar el formulario
       setInfo(initialInfo)
 
@@ -44,6 +66,8 @@ const Form = ({setPatients, patients}) => {
     
     
   }
+
+ 
 
   return (
     <div className="md:w-1/2 lg:w-2/5 m-5">
@@ -126,9 +150,8 @@ const Form = ({setPatients, patients}) => {
         
         <input
         type="submit"
-        className="bg-pink-300 hover:bg-pink-400 w-full p-2 rounded-lg text-white font-bold uppercase
-        cursor-pointer transition-colors"
-        value="Agregar paciente"
+        className={patient.id ? ("bg-green-300 hover:bg-green-400 w-full p-2 rounded-lg text-white font-bold uppercase cursor-pointer transition-colors") : ("bg-pink-300 hover:bg-pink-400 w-full p-2 rounded-lg text-white font-bold uppercase cursor-pointer transition-colors")}
+        value={patient.id ? "Editar paciente" : "Agregar paciente"}
         />
 
       </form>
