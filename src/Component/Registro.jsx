@@ -3,7 +3,12 @@ const Registro = ({patient, setPatient, eliminatePatient}) => {
   const{namePet, nameOwner, email, medicalClearance, symptom, id} = patient
 
   const handleEliminete = () => {
-    const confirmation = confirm("Esta seguro que desea eliminar al paciente: " + namePet)}
+    const confirmation = confirm("Esta seguro que desea eliminar al paciente: " + namePet)
+    
+    if(confirmation){
+      eliminatePatient(id);
+    }
+  }
   return (
     <div className="m-5 bg-white px-5 py-10 rounded-xl shadow-md">
         <p className=" font-bold mb-3 uppercase">
